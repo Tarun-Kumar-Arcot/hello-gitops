@@ -100,7 +100,42 @@ GHCR images are **private by default**, so Kubernetes requires authentication.
 
 ### Solution Implemented
 
-1. Created GHCR pull secret:
+1. Created argocd name space:-
+
+```bash
+kubectl create namespace argocd
+
+kubectl apply -n argocd \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+```
+
+2. Forwarded the port:-
+```bash
+kubectl -n argocd port-forward svc/argocd-server 8081:80
+# Argo UI: http://localhost:8081
+```
+
+3. Admin password:-
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d; echo
+```
+
+4. Created the argocd application:-
+```bash
+kubectl apply -f argocd/application.yaml
+```
+
+5. Updated the .github/workflows/ci-build-push.yaml with the file and upload this to the github repo:-
+```bash
+git branch -M main
+git pull --rebase origin main
+git push -u origin main
+git remote add origin https://github.com/Tarun-Kumar-Arcot/hello-gitops.git
+git push -u origin main
+``` 
+6. Created GHCR pull secret:
 
 ```bash
 kubectl -n hello create secret docker-registry ghcr-pull-secret \
@@ -110,7 +145,7 @@ kubectl -n hello create secret docker-registry ghcr-pull-secret \
   --docker-email=<email>
 ```
 
-2. Patched Kubernetes ServiceAccount:
+7. Patched Kubernetes ServiceAccount:
 
 ```bash
 kubectl -n hello patch serviceaccount default \
@@ -134,16 +169,37 @@ Existing pods do **not** automatically pick up new imagePullSecrets. Only newly 
 
 * Root cause: Uppercase letters in GHCR image path
 * Fix: Convert GitHub username to lowercase in CI pipeline
+~~~
+--docker-username=tarun-kumar-arcot
+~~~
 
 ### Issue 2: `403 Forbidden` while pulling image
 
 * Root cause: Missing GHCR authentication in Kubernetes
 * Fix: Create `imagePullSecret` and patch ServiceAccount
+```bash
+kubectl -n hello create secret docker-registry ghcr-pull-secret \
+  --docker-server=ghcr.io \
+  --docker-username=<github-username> \
+  --docker-password=<github-personal-access-token> \ 
+  --docker-email=<your-email>
+kubectl -n hello patch serviceaccount default \
+  -p '{"imagePullSecrets":[{"name":"ghcr-pull-secret"}]}'
+```
+My details of github:-
+
+* username: Tarun-Kumar-Arcot
+* github-personal-access-token: Go to Profile Settings ---> Developer Settings ---> Personal access token ---> Tokens (clasic) ---> Generate new token --> clasic and check these:-
+~~~
+read:packages
+repo        (safe to include)
+~~~
 
 ### Issue 3: `manifest unknown`
 
 * Root cause: Image tag not pushed or mismatched
 * Fix: Ensure GitHub Actions completed successfully and image exists in GHCR
+
 
 ---
 
@@ -203,14 +259,3 @@ This project reflects **real production scenarios**, not toy examples:
 **Tarun Kumar Arcot**
 DevOps | Kubernetes | OpenShift | GitOps
 GitHub: [https://github.com/Tarun-Kumar-Arcot](https://github.com/Tarun-Kumar-Arcot)
-
----
-
-If you want, next I can:
-
-* Rewrite this into **resume bullet points**
-* Add **architecture diagram**
-* Convert this into an **Argo Rollouts demo**
-* Prepare **interview questions from this project**
-
-Just say the word 🚀
