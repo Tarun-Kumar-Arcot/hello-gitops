@@ -102,3 +102,11 @@ jobs:
           git add k8s/deployment.yaml
           git commit -m "chore: deploy image $TAG" || echo "No changes to commit"
           git push
+
+      - name: Debug - show files
+        run: |
+          pwd
+          ls -la
+          ls -la app
+          cat app/Dockerfile
+          cat app/requirements.txt
