@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: hello-app
-        image: ghcr.io/tarun-kumar-arcot/hello-gitops:latest
+        image: ghcr.io/Tarun-Kumar-Arcot/hello-gitops:latest
         ports:
         - containerPort: 8080
         readinessProbe:
