@@ -253,6 +253,11 @@ This project reflects **real production scenarios**, not toy examples:
 * Integrate security scanning (Trivy)
 
 ---
+## Output Screens
+
+<img width="1919" height="837" alt="Screenshot 2025-12-26 182524" src="https://github.com/user-attachments/assets/6605e36b-3832-47d3-b275-40b7ac44f313" />
+
+<img width="1911" height="834" alt="Screenshot 2025-12-26 183211" src="https://github.com/user-attachments/assets/231af0e2-665c-4a57-bd8f-a96ce6609784" />
 
 ## 👤 Author
 
