@@ -17,7 +17,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
       - name: hello-app
-        image: ghcr.io/tarun-kumar-arcot/hello-gitops:168ba33ebf8e1566a70f4f97418ae5093b9d3891
+        image: ghcr.io/tarun-kumar-arcot/hello-gitops:677df8fb8684b0be1f4e0d54d5a1d808c3ad6bd1
         ports:
         - containerPort: 8080
         readinessProbe:
