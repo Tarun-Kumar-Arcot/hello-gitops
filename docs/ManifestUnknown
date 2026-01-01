@@ -1,0 +1,5 @@
+### Issue 3: `manifest unknown`
+
+* Root cause: Image tag not pushed or mismatched
+* Fix: Ensure GitHub Actions completed successfully and image exists in GHCR
+

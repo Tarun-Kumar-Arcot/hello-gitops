@@ -163,46 +163,6 @@ Existing pods do **not** automatically pick up new imagePullSecrets. Only newly 
 
 ---
 
-## ⚠️ Debugging & Troubleshooting
-
-### Issue 1: `InvalidImageName`
-
-* Root cause: Uppercase letters in GHCR image path
-* Fix: Convert GitHub username to lowercase in CI pipeline
-~~~
---docker-username=tarun-kumar-arcot
-~~~
-
-### Issue 2: `403 Forbidden` while pulling image
-
-* Root cause: Missing GHCR authentication in Kubernetes
-* Fix: Create `imagePullSecret` and patch ServiceAccount
-```bash
-kubectl -n hello create secret docker-registry ghcr-pull-secret \
-  --docker-server=ghcr.io \
-  --docker-username=<github-username> \
-  --docker-password=<github-personal-access-token> \ 
-  --docker-email=<your-email>
-kubectl -n hello patch serviceaccount default \
-  -p '{"imagePullSecrets":[{"name":"ghcr-pull-secret"}]}'
-```
-My details of github:-
-
-* username: Tarun-Kumar-Arcot
-* github-personal-access-token: Go to Profile Settings ---> Developer Settings ---> Personal access token ---> Tokens (clasic) ---> Generate new token --> clasic and check these:-
-~~~
-read:packages
-repo        (safe to include)
-~~~
-
-### Issue 3: `manifest unknown`
-
-* Root cause: Image tag not pushed or mismatched
-* Fix: Ensure GitHub Actions completed successfully and image exists in GHCR
-
-
----
-
 ## ✅ Final Verification
 
 ```bash
@@ -258,6 +218,26 @@ This project reflects **real production scenarios**, not toy examples:
 <img width="1919" height="837" alt="Screenshot 2025-12-26 182524" src="https://github.com/user-attachments/assets/6605e36b-3832-47d3-b275-40b7ac44f313" />
 
 <img width="1911" height="834" alt="Screenshot 2025-12-26 183211" src="https://github.com/user-attachments/assets/231af0e2-665c-4a57-bd8f-a96ce6609784" />
+
+---
+## 🧪 Application Overview
+A simple Python Flask application that returns a “Hello World” response.
+The application is intentionally minimal to focus on CI/CD and GitOps workflows.
+
+## 🎯 What This Project Demonstrates
+- GitOps-based deployment using Argo CD
+- CI pipeline using GitHub Actions
+- Container image management with GHCR
+- Secure image pulls using Kubernetes imagePullSecrets
+- Real-world Kubernetes troubleshooting (ImagePullBackOff)
+
+## 🌐 Accessing the Application
+The application is exposed via a Kubernetes Service.
+
+For local access:
+```bash
+kubectl -n hello port-forward svc/hello-service 8080:80
+
 
 ## 👤 Author
 
